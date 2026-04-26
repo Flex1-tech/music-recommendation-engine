@@ -43,24 +43,29 @@ def is_audio_file(filepath):
 #         show_toast(label.master, "Erreur lors de l'ouverture des fichiers")
 #         return {}
 
-def open_file(root, label):
+def open_file(root, valid_files=None):
+    if valid_files is None:
+        valid_files = {}
+    
     try:
         file_paths = filedialog.askopenfilenames(
             title="Select audio files",
             filetypes=[("All files", "*.*")]
         )
-
-        valid_files = {}
+        
         invalid_count = 0
 
         for path in file_paths:
+            if path in valid_files:
+                continue  # éviter doublons
+
             if is_audio_file(path) and is_valid_media(path):
                 valid_files[path] = False
             else:
                 invalid_count += 1
         
-        if len(valid_files) > 0:
-            label.configure(text=f"{len(valid_files)} fichiers importé(s)")
+        # if len(valid_files) > 0:
+        #     label.configure(text=f"{len(valid_files)} fichiers importé(s)")
 
         if invalid_count > 0:
             show_toast(root, f"{invalid_count} fichiers ignorés")

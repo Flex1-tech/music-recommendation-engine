@@ -17,7 +17,7 @@
 #     # label = True ou False
 # def liker(item, label):
 #     likes[item] = likes.get(item, 0)+1
-    
+
 
 # frame_liste = ctk.CTkScrollableFrame(app, label_text="Mon Panier")
 # frame_liste.pack(padx=20, pady=20, fill="both", expand=True)
@@ -69,7 +69,7 @@ liked = False
 
 # Animation "pop"
 def animation_pop(bouton, step=0):
-    sizes = [30, 36, 30]  # effet zoom
+    sizes = [30, 36, 42, 30]  # effet zoom
 
     if step < len(sizes):
         size = sizes[step]
@@ -82,7 +82,7 @@ def animation_pop(bouton, step=0):
         bouton.configure(image=img)
         bouton.image = img  # éviter suppression mémoire
 
-        app.after(30, lambda: animation_pop(bouton, step + 1))
+        app.after(50, lambda: animation_pop(bouton, step + 1))
 
 # Fonction like
 def toggle_like(bouton):
