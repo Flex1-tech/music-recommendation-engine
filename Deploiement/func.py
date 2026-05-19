@@ -7,6 +7,31 @@ from mutagen import File
 import subprocess
 
 
+
+
+def get_media_type(filepath):
+    """
+    Retourne: 'audio', 'video' ou None
+    """
+    try:
+        with open(filepath, "rb") as file:
+            info = fleep.get(file.read(128))
+
+        types = info.type
+
+        if not types:
+            return None
+
+        if "audio" in types:
+            return "audio"
+        elif "video" in types:
+            return "video"
+
+        return None
+
+    except:
+        return None
+
 def is_valid_media(filepath):
     try:
         result = subprocess.run(
@@ -21,27 +46,7 @@ def is_valid_media(filepath):
 def is_audio_file(filepath):
     with open(filepath, "rb") as file:
         info = fleep.get(file.read(128))
-        # print(f"File: {filepath}, Type: {info.type}")
     return "audio" in info.type or "video" in info.type  # Some audio files may be classified as video
-
-# def open_file(label):
-#     try:
-#         file_paths = filedialog.askopenfilenames(
-#             title="Select audio files",
-#             filetypes=[("All files", "*.*")]
-#         )
-#         valid_files = {}
-#         for path in file_paths:
-#             if is_audio_file(path) and is_valid_media(path):
-#                 valid_files[path] = False # False indicates not liked yet
-#         # print("Valid audio files:", valid_files)
-#         label.configure(text=f"{len(valid_files)} fichiers choisis",fg_color=("gray20", "gray80"))
-#         return valid_files
-#     except Exception as e:
-#         # print("Error:", e)
-#         # label.configure(text="Error opening files")
-#         show_toast(label.master, "Erreur lors de l'ouverture des fichiers")
-#         return {}
 
 def open_file(root, valid_files=None):
     if valid_files is None:
@@ -64,8 +69,6 @@ def open_file(root, valid_files=None):
             else:
                 invalid_count += 1
         
-        # if len(valid_files) > 0:
-        #     label.configure(text=f"{len(valid_files)} fichiers importé(s)")
 
         if invalid_count > 0:
             show_toast(root, f"{invalid_count} fichiers ignorés")
@@ -78,38 +81,6 @@ def open_file(root, valid_files=None):
         show_toast(root, "Erreur lors de l'ouverture des fichiers")
         return {}
 
-# def fade_color(widget, start_color, end_color, steps=20, delay=20):
-#     import time
-
-#     def hex_to_rgb(hex_color):
-#         hex_color = hex_color.lstrip("#")
-#         return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-
-#     def rgb_to_hex(rgb):
-#         return "#%02x%02x%02x" % rgb
-
-#     start = hex_to_rgb(start_color)
-#     end = hex_to_rgb(end_color)
-
-#     # Chaque appel génère un token unique
-#     token = object()
-#     widget._fade_token = token
-
-#     def step(i):
-#         # Si un nouvel appel a démarré, on abandonne cette animation
-#         if getattr(widget, "_fade_token", None) is not token:
-#             return
-#         if i > steps:
-#             return
-
-#         ratio = i / steps
-#         new_color = tuple(
-#             int(start[j] + (end[j] - start[j]) * ratio) for j in range(3)
-#         )
-#         widget.configure(fg_color=rgb_to_hex(new_color))
-#         widget.after(delay, lambda: step(i + 1))
-
-#     step(0)
 
 def show_toast(root, message, duration=3000):
 
